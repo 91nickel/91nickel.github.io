@@ -3,13 +3,13 @@
 var connection = new WebSocket('wss://neto-api.herokuapp.com/draw');
 connection.binaryType = 'arraybuffer';
 
+connection.addEventListener('message', (e) => {
+    console.log('Получено сообщение от сервера');
+    console.log(e.data.byteLength);
+})
+
 connection.addEventListener('open', (e) => {
     console.log('Вебсокет-соединение открыто');
-
-    connection.addEventListener('message', (e) => {
-        console.log('Получено сообщение от сервера');
-        console.log(e.data.byteLength);
-    })
 
     window.editor.addEventListener('update', (e) => {
         console.log('Сработало событие update');
