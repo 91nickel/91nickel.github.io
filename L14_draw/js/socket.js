@@ -5,6 +5,7 @@ connection.binaryType = 'arraybuffer';
 
 connection.addEventListener('message', (e) => {
     console.log('Получено сообщение от сервера');
+    console.log(e.data);
     console.log(e.data.byteLength);
 })
 
@@ -20,8 +21,4 @@ connection.addEventListener('open', (e) => {
         const binary = Uint8Array.from(image.data);
         connection.send(binary.buffer);
     })
-
 });
-
-
-
