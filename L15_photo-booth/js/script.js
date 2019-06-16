@@ -93,6 +93,28 @@ function createPhoto(url) {
 
 function uploadImage(event) {
     const image = event.target.parentElement.parentElement.parentElement.querySelector('img');
+    console.log(image);
+    var xhr = new XMLHttpRequest();
+    xhr.open(
+        "POST",
+        "https://neto-api.herokuapp.com/photo-booth",
+        true
+    );
+    xhr.addEventListener('load', onLoad)
+
+    const formData = new FormData();
+    formData.append('image', image);
+    console.log(formData);
+
+    for (const [k, v] of formData) {
+        console.log(k + ': ' + v);
+    }
+
+    xhr.send(formData);
+
+    function onLoad() {
+        console.log(xhr.responseText);
+    }
 }
 
 /*
