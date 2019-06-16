@@ -100,11 +100,11 @@ function uploadImage(event) {
         "https://neto-api.herokuapp.com/photo-booth",
         true
     );
+    xhr.setRequestHeader('Content-type', 'multipart/formdata');
     xhr.addEventListener('load', onLoad)
 
     const formData = new FormData();
-    formData.append('image', image);
-    console.log(formData);
+    formData.append('image', image.src);
 
     for (const [k, v] of formData) {
         console.log(k + ': ' + v);
