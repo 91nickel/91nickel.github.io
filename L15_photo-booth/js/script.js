@@ -104,7 +104,23 @@ function uploadImage(event) {
     xhr.addEventListener('load', onLoad)
 
     const formData = new FormData();
-    formData.append('image', image.src);
+
+    const newCanvas = document.createElement('canvas');
+    const newCtx = canvas.getContext('2d');
+    newCanvas.width = image.clientWidth;
+    newCanvas.height = image.clientHeight;
+
+    //console.log(image.clientHeight, image.clientWidth);
+    //console.log(newCanvas.height, newCanvas.width);
+
+    newCtx.drawImage(image, 0, 0);
+
+    newCanvas.toBlob(blob => {
+        console.log(blob);
+        formData.append('image', blob);
+    });
+
+    //formData.append('image', 'image');
 
     for (const [k, v] of formData) {
         console.log(k + ': ' + v);
@@ -116,16 +132,3 @@ function uploadImage(event) {
         console.log(xhr.responseText);
     }
 }
-
-/*
-<figure>
-  <img src="path/to/pic.png">
-  <figcaption>
-    <a href="path/to/pic.png" download="snapshot.png">
-      <i class="material-icons">file_download</i>
-    </a>
-    <a><i class="material-icons">file_upload</i></a>
-    <a><i class="material-icons">delete</i></a>
-  </figcaption>
-</figure>
-*/

@@ -21,6 +21,6 @@ container.addEventListener('click', (e) => {
 })
 
 function setOutput() {
-    counter = localStorage.getItem('counter') === undefined ? 0 : localStorage.getItem('counter');
+    counter = !localStorage.getItem('counter') ? 0 : localStorage.getItem('counter');
     output.innerHTML = counter;
 }

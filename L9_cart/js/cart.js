@@ -14,6 +14,7 @@ setTimeout(getParamsFromStorage, 1500);
 function addToCart() {
     const form = document.querySelector('#AddToCartForm');
     form.addEventListener('click', (e) => {
+        e.preventDefault();
         //console.log(e.target.id);
         if (e.target.id === 'AddToCart' || e.target.parentElement.id === 'AddToCart') {
             console.log('Отправка формы');

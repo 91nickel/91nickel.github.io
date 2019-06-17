@@ -10,9 +10,6 @@ function sendLoginForm() {
     for (const [k, v] of loginFormData) {
         console.log(k + ': ' + v);
     }
-    const loginFormArray = Array.from(loginFormData);
-    console.log(loginFormArray);
-
     const xhr = new XMLHttpRequest()
     xhr.addEventListener('load', (e) => {
         const response = JSON.parse(xhr.response);
@@ -25,7 +22,7 @@ function sendLoginForm() {
     });
 
     xhr.open('POST', 'https://neto-api.herokuapp.com/signin');
-    xhr.send(JSON.stringify(loginFormData));
+    xhr.send(loginFormData);
 }
 
 const signUpForm = document.querySelector('.sign-up-htm');
@@ -44,8 +41,6 @@ function sendSignUpForm() {
     for (const [k, v] of signUpFormData) {
         console.log(k + ': ' + v);
     }
-    const signUpFormArray = Array.from(signUpFormData);
-    console.log(signUpFormArray);
 
     const xhr = new XMLHttpRequest()
     xhr.addEventListener('load', (e) => {
@@ -60,5 +55,5 @@ function sendSignUpForm() {
     });
 
     xhr.open('POST', 'https://neto-api.herokuapp.com/signup');
-    xhr.send(JSON.stringify(signUpFormData));
+    xhr.send(signUpFormData);
 }

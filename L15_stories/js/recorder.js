@@ -80,7 +80,7 @@ function record(app) {
           console.log(image);
           app.preview.srcObject = null;
           videoView.srcObject.getTracks().forEach(track => track.stop());
-          done({video:recorded, frame:image});
+          done({video:videoRec.src, frame:image});
         });
         setTimeout(startRec, 1000);
         setTimeout(stopRec, app.limit);
