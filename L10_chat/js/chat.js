@@ -56,6 +56,7 @@ connection.addEventListener('message', event => {
 });
 connection.addEventListener('close', event => {
   console.log(`Соединение закрыто`);
+  console.log(event);
   h2.innerText = h2.dataset.offline;
   button.setAttribute('disabled', true);
 
