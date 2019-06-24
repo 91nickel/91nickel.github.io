@@ -10,6 +10,7 @@ document.addEventListener('mouseup', drop);
 
 
 function dragStart(e) {
+    e.preventDefault();
     if (e.target.classList.contains('logo')) {
         movedItem = e.target;
         movedXY = [e.target.style.top, e.target.style.left];
