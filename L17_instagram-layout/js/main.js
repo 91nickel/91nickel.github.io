@@ -17,6 +17,12 @@ class iLayout {
   registerEvents() {
     document.addEventListener('dragover', (e) => {
       e.preventDefault();
+      if(hasClass('layout__item', e.target)) {
+        e.target.classList.add('layout__item_active');
+      }
+    })
+    this.positionsContainer.addEventListener('dragleave', (e)=>{
+      e.target.classList.remove('layout__item_active');
     })
     document.addEventListener('drop', this.addImage.bind(this));
     this.actionButton.addEventListener('click', this.createCollage.bind(this))
@@ -25,6 +31,7 @@ class iLayout {
     e.preventDefault();
     let file = e.dataTransfer.files[0];
     const container = e.target;
+    e.target.classList.remove('layout__item_active');
     const imageTypeRegExp = /^image\//;
 
     try {
@@ -73,7 +80,7 @@ class iLayout {
     const img = document.createElement('img');
     img.src = canvas.toDataURL();
     this.container.appendChild(img);
-    this.result.innerText = img.src;
+    this.result.innerText = img.outerHTML;
   }
 }
 
