@@ -41,6 +41,12 @@ canvas.addEventListener('mousedown', (e) => {
 canvas.addEventListener('mouseup', (e) => {
     mouseDown = false;
     console.log(e);
+})
+
+document.addEventListener('mousemove', (e) => {
+    //console.log(e);
+    x = e.clientX;
+    y = e.clientY;
 
     if (e.shiftKey) {
         color = color === 0 ? 359 : color - 1;
@@ -61,12 +67,6 @@ canvas.addEventListener('mouseup', (e) => {
         }
     }
     radius += radiusDirect;
-})
-
-document.addEventListener('mousemove', (e) => {
-    //console.log(e);
-    x = e.clientX;
-    y = e.clientY;
 });
 
 setInterval(drawFunction, 1);
