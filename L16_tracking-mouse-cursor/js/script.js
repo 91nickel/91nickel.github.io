@@ -13,25 +13,61 @@ class Eye {
             x: this.coords.x + this.coords.width / 2,
             y: this.coords.y + this.coords.heigt / 2
         }
+        this.eyeCoords = element.getBoundingClientRect();
+        console.log(this.eyeCoords);
     };
     changePosition(event) {
         console.log('Вызов изменения позиции');
-        console.log(event);
-        console.log(window);
+        //console.log(event);
+        //console.log(window);
         const windowAbsSize = {
             x: window.innerWidth,
             y: window.innerHeight
         }
-        const windowCenter = {
-            x: windowAbsSize.x / 2,
-            y: windowAbsSize.y / 2
+        const abs0 = {
+            x: this.eyeCoords.x + this.eyeCoords.width / 2,
+            y: this.eyeCoords.y + this.eyeCoords.height / 2
         }
-        const shift = {
-            xp: (event.clientX - windowCenter.x) / windowCenter.x,
-            yp: (event.clientY - windowCenter.y) / windowCenter.y
+        const shift = getShiftX(event);
+
+        function getShiftX(e) {
+            let x = 0;
+            let y = 0;
+            if (e.clientX > abs0.x) {
+                x = 20 * (e.clientX - abs0.x) / (windowAbsSize.x - abs0.x);
+            }
+            if (e.clientX < abs0.x) {
+                x = 20 * (e.clientX - abs0.x) / (abs0.x);
+            }
+
+            if (e.clientY > abs0.y) {
+                y = 20 * (e.clientY - abs0.y) / (windowAbsSize.y - abs0.y);
+            }
+            if (e.clientY < abs0.y) {
+                y = 20 * (e.clientY - abs0.y) / (abs0.y);
+            }
+
+            if (x > 1) {
+                x = 1;
+            }
+            if (x < -1) {
+                x = -1;
+            }
+            if (y > 1) {
+                y = 1;
+            }
+            if (y < -1) {
+                y = -1;
+            }
+
+            return {
+                x: x,
+                y: y
+            }
         }
-        this.element.style.left = 10 + 35 * event.clientX / windowAbsSize.x + '%';
-        this.element.style.top = 10 + 35 * event.clientY / windowAbsSize.y + '%';
+        console.log(shift);
+        this.element.style.left = 100 * (this.eyeCoords.width - this.coords.width) / 2 / this.eyeCoords.width + (20 * shift.x) + '%';
+        this.element.style.top = 100 * (this.eyeCoords.width - this.coords.width) / 2 / this.eyeCoords.width + (20 * shift.y) + '%';;
     }
 }
 
