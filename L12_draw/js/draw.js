@@ -69,8 +69,8 @@ document.addEventListener('mousemove', (e) => {
     radius += radiusDirect;
 });
 
-setInterval(drawFunction, 1);
-setInterval(windowSize, 1);
+setInterval(drawFunction, 16);
+setInterval(windowSize, 16);
 
 function drawFunction() {
     drawing = inPlace && mouseDown ? true : false;
