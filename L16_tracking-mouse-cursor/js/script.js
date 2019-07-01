@@ -17,7 +17,7 @@ class Eye {
         console.log(this.eyeCoords);
     };
     changePosition(event) {
-        console.log('Вызов изменения позиции');
+        //console.log('Вызов изменения позиции');
         //console.log(event);
         //console.log(window);
         const windowAbsSize = {
@@ -47,27 +47,19 @@ class Eye {
                 y = 20 * (e.clientY - abs0.y) / (abs0.y);
             }
 
-            if (x > 1) {
-                x = 1;
-            }
-            if (x < -1) {
-                x = -1;
-            }
-            if (y > 1) {
-                y = 1;
-            }
-            if (y < -1) {
-                y = -1;
-            }
+            x = x > 1 ? 1 : x;
+            x = x < -1 ? -1 : x;
+            y = y > 1 ? 1 : y;
+            y = y < -1 ? -1 : y;
 
             return {
                 x: x,
                 y: y
             }
         }
-        console.log(shift);
-        this.element.style.left = 100 * (this.eyeCoords.width - this.coords.width) / 2 / this.eyeCoords.width + (20 * shift.x) + '%';
-        this.element.style.top = 100 * (this.eyeCoords.width - this.coords.width) / 2 / this.eyeCoords.width + (20 * shift.y) + '%';;
+        //console.log(shift);
+        this.element.style.left = 106 * (this.eyeCoords.width - this.coords.width) / 2 / this.eyeCoords.width + (17 * shift.x) + '%';
+        this.element.style.top = 106 * (this.eyeCoords.width - this.coords.width) / 2 / this.eyeCoords.width + (17 * shift.y) + '%';;
     }
 }
 
