@@ -84,7 +84,7 @@ function drawFunction() {
     ctx.lineCap = 'round';
     ctx.arc(x, y, radius, 0, 2 * pi);
     ctx.fill();
-    ctx.closePath();
+    //ctx.closePath();
 }
 
 function clearCanvas() {
