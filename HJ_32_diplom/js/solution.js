@@ -341,7 +341,7 @@ function dragDrop() {
             const img = document.createElement('img');
             addClass('current-image', img);
             img.src = URL.createObjectURL(file);
-            imageContainer.appendChild(img);
+            imageContainer.insertBefore(img, document.querySelector('.comments__form'));
             menubarItems.forEach(el => {
                 el.classList.display = 'inherit';
             })
