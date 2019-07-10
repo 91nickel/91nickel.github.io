@@ -5,6 +5,7 @@ const firstImage = imageContainer.querySelector('.current-image');
 const menubarItems = imageContainer.querySelectorAll('ul li');
 const preloader = document.querySelector('.image-loader');
 const formatError = document.querySelector('.error');
+let canvas;
 
 dragDrop();
 
@@ -95,7 +96,6 @@ class ViewState {
                     })
                 }
             }
-
             return modes[param];
         }
 
@@ -243,6 +243,78 @@ class MovingElement {
     }
 }
 
+class DrawingMode {
+    constructor() {
+        this.img = document.querySelector('.current-image');
+        this.img.style.opacity = 0.5;
+        this.canvas = document.createElement('canvas');
+        this.drawingPanel = document.querySelector('.draw-tools');
+        imageContainer.insertBefore(this.canvas, this.img);
+        this.ctx = this.canvas.getContext('2d');
+        this.isDrawing = false;
+        this.canvas.height = this.img.clientHeight;
+        this.canvas.width = this.img.clientWidth;
+        this.canvas.classList.add('current-image');
+        this.events();
+    }
+    events() {
+        this.img.addEventListener('mousedown', this.mouseDown.bind(this));
+        this.img.addEventListener('mouseup', this.mouseUp.bind(this));
+        this.img.addEventListener('mousemove', this.mouseMove.bind(this));
+        this.img.addEventListener('mouseleave', this.mouseLeave.bind(this));
+        this.drawingPanel.addEventListener('click', (event) => {
+            if (event.target.tagName === 'INPUT') {
+                event.target.parentElement.querySelectorAll('input').forEach(el => {
+                    el.removeAttribute('checked');
+                })
+                event.target.setAttribute('checked', '');
+            }
+        })
+    }
+    showHide() {
+        this.canvas.style.display = this.canvas.style.display === '' ? 'none' : '';
+    }
+    mouseDown(event) {
+        event.preventDefault();
+
+        this.isDrawing = true;
+        console.log('MouseDown на канвас');
+        console.log('color - ', this.color);
+    }
+    mouseMove(event) {
+        event.preventDefault();
+        const isDrawing = this.isDrawing;
+        const canvas = this.canvas;
+        const ctx = this.ctx;
+        const color = this.color;
+        
+        requestAnimationFrame(() => {
+            if (isDrawing && viewState.menu === 'paint') {
+                console.log('MouseMove на канвас');
+                ctx.beginPath();
+                ctx.fillStyle = color;
+                ctx.lineJoin = 'round';
+                ctx.lineCap = 'round';
+                ctx.arc(event.clientX - canvas.getBoundingClientRect().left, event.clientY - canvas.getBoundingClientRect().top, 5, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+        })
+    }
+    mouseUp(event) {
+        event.preventDefault();
+        this.isDrawing = false;
+        console.log('MouseUp на канвас');
+    }
+    mouseLeave(event){
+        event.preventDefault();
+        this.isDrawing = false;
+        console.log('MouseLeave на канвас');
+    }
+    get color() {
+        return this.drawingPanel.querySelector('input[checked]').value;
+    }
+}
+
 //Задает параметры получения файла через drag&drop
 function dragDrop() {
     document.addEventListener('dragover', (e) => {
@@ -275,7 +347,8 @@ function dragDrop() {
             })
             sendFile(file).then((request) => {
                 console.log(request);
-                viewState.menuSet('full');
+                viewState.menuSet('main');
+                canvas = new DrawingMode();
             });
         }
     });
