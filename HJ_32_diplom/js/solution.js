@@ -247,14 +247,9 @@ class DrawingMode {
     constructor() {
         this.img = document.querySelector('.current-image');
         this.img.style.opacity = 0.5;
-        this.canvas = document.createElement('canvas');
+        this.newCanvas();
         this.drawingPanel = document.querySelector('.draw-tools');
-        imageContainer.insertBefore(this.canvas, this.img);
-        this.ctx = this.canvas.getContext('2d');
         this.isDrawing = false;
-        this.canvas.height = this.img.clientHeight;
-        this.canvas.width = this.img.clientWidth;
-        this.canvas.classList.add('current-image');
         this.events();
     }
     events() {
@@ -271,12 +266,12 @@ class DrawingMode {
             }
         })
     }
+    //Скроет, либо покажет текущий canvas
     showHide() {
-        this.canvas.style.display = this.canvas.style.display === '' ? 'none' : '';
+        this.canvas.style.display = this.canvas.style.display === '' && this.canvas ? 'none' : '';
     }
     mouseDown(event) {
         event.preventDefault();
-
         this.isDrawing = true;
         console.log('MouseDown на канвас');
         console.log('color - ', this.color);
@@ -287,7 +282,7 @@ class DrawingMode {
         const canvas = this.canvas;
         const ctx = this.ctx;
         const color = this.color;
-        
+
         requestAnimationFrame(() => {
             if (isDrawing && viewState.menu === 'paint') {
                 console.log('MouseMove на канвас');
@@ -305,11 +300,33 @@ class DrawingMode {
         this.isDrawing = false;
         console.log('MouseUp на канвас');
     }
-    mouseLeave(event){
+    mouseLeave(event) {
         event.preventDefault();
         this.isDrawing = false;
         console.log('MouseLeave на канвас');
     }
+    //Создаёт новый canvas и вставляет его в нужное место
+    newCanvas() {
+        this.canvas = document.createElement('canvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.canvas.height = this.img.clientHeight;
+        this.canvas.width = this.img.clientWidth;
+        this.canvas.classList.add('current-image');
+        imageContainer.insertBefore(this.canvas, this.img);
+    }
+    //Удаляет текущий canvas
+    clearCanvas() {
+        if (this.canvas) {
+            imageContainer.removeChild(this.canvas);
+            delete this.canvas;
+            delete this.ctx;
+        }
+    }
+    //Преобразует текущий canvas в img и вернет ссылку на изображение
+    canvasToImg() {
+
+    }
+    //Получает текущий цвет из панели рисования
     get color() {
         return this.drawingPanel.querySelector('input[checked]').value;
     }
@@ -337,7 +354,7 @@ function dragDrop() {
             viewState.errorSet();
         }
 
-        if (file) {
+        if (file && !document.querySelector('.current-image')) {
             const img = document.createElement('img');
             addClass('current-image', img);
             img.src = URL.createObjectURL(file);
