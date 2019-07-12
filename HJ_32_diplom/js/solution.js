@@ -1,11 +1,11 @@
 'use strict';
 console.log(`Hello World`);
 const imageContainer = document.querySelector('.wrap.app');
-const firstImage = imageContainer.querySelector('.current-image');
+const firstImage = imageContainer.querySelector('img.current-image');
 const menubarItems = imageContainer.querySelectorAll('ul li');
 const preloader = document.querySelector('.image-loader');
 const formatError = document.querySelector('.error');
-let canvas;
+let ws;
 
 dragDrop();
 
@@ -201,28 +201,36 @@ class MovingElement {
             x: this.container.children[0].getBoundingClientRect().width / 2,
             y: this.container.children[0].getBoundingClientRect().height / 2
         }
+        if (this.position) {
+            this.container.style.left = this.position.x;
+            this.container.style.top = this.position.y;
+        } else {
+            this.container.style.left = '0px';
+            this.container.style.top = '0px';
+        }
         this.events();
     }
     events() {
-        console.log(this.container);
-        document.addEventListener('mousedown', (e) => {
+        //console.log(this.container);
+        this.container.addEventListener('mousedown', (e) => {
             if (e.target === this.container.children[0]) {
                 console.log(`MouseDown`);
                 this.onMoving = true;
                 this.movingElement = this.container;
             }
         });
-        document.addEventListener('mousemove', (e) => {
+        this.container.addEventListener('mousemove', (e) => {
             if (this.onMoving) {
                 console.log(`MouseMove`);
                 //console.log(`Регистрация движения`);
                 this.changePosition(this.container, this.shift, e);
             }
         });
-        document.addEventListener('mouseup', (e) => {
+        this.container.addEventListener('mouseup', (e) => {
             console.log(`MouseUp`);
             this.onMoving = false;
             this.movingElement = null;
+            this.position = true;
             //console.log(this);
         });
     }
@@ -241,14 +249,28 @@ class MovingElement {
             element.style.top = top + 'px';
         })
     }
+    set position(data) {
+        console.log('set position');
+        localStorage.menuPosition = JSON.stringify({
+            x: this.container.style.left,
+            y: this.container.style.top
+        })
+    }
+    get position() {
+        console.log('get position');
+        if (localStorage.menuPosition) {
+            return JSON.parse(localStorage.menuPosition);
+        }
+    }
 }
 
 class DrawingMode {
-    constructor() {
-        this.img = document.querySelector('.current-image');
+    constructor(container = document.querySelector('.wrap.app')) {
+        this.container = container;
+        this.img = this.container.querySelector('img.current-image');
         this.img.style.opacity = 0.5;
         this.newCanvas();
-        this.drawingPanel = document.querySelector('.draw-tools');
+        this.drawingPanel = this.container.querySelector('.draw-tools');
         this.isDrawing = false;
         this.events();
     }
@@ -309,15 +331,19 @@ class DrawingMode {
     newCanvas() {
         this.canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d');
-        this.canvas.height = this.img.clientHeight;
-        this.canvas.width = this.img.clientWidth;
         this.canvas.classList.add('current-image');
-        imageContainer.insertBefore(this.canvas, this.img);
+        this.canvas.height = 0;
+        this.canvas.width = 0;
+        setTimeout(() => {
+            this.canvas.height = this.img.clientHeight;
+            this.canvas.width = this.img.clientWidth;
+        }, 2000)
+        this.container.insertBefore(this.canvas, this.img);
     }
     //Удаляет текущий canvas
     clearCanvas() {
         if (this.canvas) {
-            imageContainer.removeChild(this.canvas);
+            this.container.removeChild(this.canvas);
             delete this.canvas;
             delete this.ctx;
         }
@@ -329,6 +355,98 @@ class DrawingMode {
     //Получает текущий цвет из панели рисования
     get color() {
         return this.drawingPanel.querySelector('input[checked]').value;
+    }
+}
+
+class WS {
+    constructor() {
+        this.getConnectionLink().then((data) => {
+            console.log('Ссылка получена');
+            this.createConnection(data);
+        });
+    }
+    events() {
+        this.connection.addEventListener('open', (event) => {
+            console.log('WS соединение установлено');
+        })
+        this.connection.addEventListener('message', (event) => {
+            console.log('Получено сообщение по WebSocket');
+            console.log(event);
+        })
+    }
+    //Создает WebSocket соединение
+    createConnection(link) {
+        if (link) {
+            this.connection = new WebSocket(link);
+            this.events();
+        }
+    }
+    //Получает id из localStorage до тех пор пока не получит. Возвращает полную ссылку
+    getConnectionLink() {
+        console.log('getImageId')
+        return new Promise((resolve, reject) => {
+            getLink();
+
+            function getLink() {
+                requestAnimationFrame(() => {
+                    if (localStorage.currentImage) {
+                        resolve('wss://neto-api.herokuapp.com/pic/' + JSON.parse(localStorage.currentImage).id);
+                    } else {
+                        console.log('Повторный запуск');
+                        setTimeout(getLink(), 500);
+                    };
+                });
+            }
+        });
+    }
+}
+
+class Controller {
+    constructor(container = document.querySelector('.wrap.app')) {
+        this.container = container;
+        this.defaultStart();
+        this.menubar = this.container.querySelector('.menu');
+        this.menubarMotion = new MovingElement(this.menubar);
+
+        if (this.currentImage) {
+            this.standartStart();
+        };
+        this.wsconnection = new WS();
+    }
+    //Задаст стартовые параметры если изображение отсутствует
+    defaultStart() {
+        this.container.removeChild(this.container.querySelector('img.current-image'));
+    }
+    //Задаст стартовые параметры если данные в системе уже есть
+    standartStart() {
+        this.canvas = new DrawingMode(this.container);
+    }
+    //Проверяет есть ли данные об изображении в localStorage
+    hasImageInStorage() {
+        if (localStorage.currentImage) {
+            return true;
+        }
+    }
+    //Очистит localStorage
+    clearStorage() {
+        console.log('ClearStorage');
+        localStorage.clear();
+    }
+    //Установит WS соединение
+    webSocketConnection() {}
+    //Возвратит текущее изображение на странице
+    get currentImage() {
+        console.log('get .current-image');
+        let image = this.container.querySelector('img.current-image');
+        if (image) {
+            return image;
+        } else if (this.hasImageInStorage()) {
+            image = document.createElement('img');
+            image.classList.add('current-image');
+            image.src = JSON.parse(localStorage.currentImage).url;
+            this.container.insertBefore(image, this.container.querySelector('.comments__form'));
+            return this.container.querySelector('img.current-image');
+        }
     }
 }
 
@@ -362,11 +480,21 @@ function dragDrop() {
             menubarItems.forEach(el => {
                 el.classList.display = 'inherit';
             })
+            viewState.preloaderSet();
+            sendFileFetch(file).then((data) => {
+                viewState.preloaderSet();
+                viewState.menuSet('main');
+                controller.canvas = new DrawingMode();
+                console.log(data);
+                localStorage.currentImage = JSON.stringify(data);
+            });
+            /*
             sendFile(file).then((request) => {
-                console.log(request);
+                console.log('request ', request);
                 viewState.menuSet('main');
                 canvas = new DrawingMode();
             });
+            */
         }
     });
 }
@@ -381,10 +509,16 @@ function sendFile(file) {
             "https://neto-api.herokuapp.com/pic",
             true
         );
-        xhr.setRequestHeader('Content-type', 'multipart/formdata');
+        //xhr.setRequestHeader('Content-type', 'multipart/formdata');
         const form = new FormData();
-        form.append('title', 'Image from 91nickel')
+        form.append('title', file.name)
         form.append('image', file);
+
+        console.log(file);
+        for (const [k, v] of form) {
+            console.log(k + ': ' + v);
+        }
+
         setTimeout(() => {
             xhr.send(form);
         }, 20)
@@ -400,17 +534,35 @@ function sendFile(file) {
             resolve(xhr.responseText);
         });
     });
+}
 
+function sendFileFetch(file, resource = 'https://neto-api.herokuapp.com/pic') {
+
+    const form = new FormData();
+    form.append('title', file.name)
+    form.append('image', file);
+    /*
+        console.log(file);
+        for (const [k, v] of form) {
+            console.log(k + ': ' + v);
+        }
+    */
+    return fetch(resource, {
+        body: form,
+        credentials: 'same-origin',
+        method: 'POST',
+    }).then((res) => {
+        return res.json();
+    })
 }
 
 const addClass = (className, context) => context.classList.add(className),
     removeClass = (className, context) => context.classList.remove(className),
     hasClass = (className, context) => context.classList.contains(className);
 
+const controller = new Controller();
 const viewState = new ViewState();
-const movingMenu = new MovingElement();
-
-imageContainer.removeChild(firstImage);
+//const movingMenu = new MovingElement();
 
 if (!imageContainer.querySelector('img')) {
     console.log(`Загрузка по умолчанию`);
@@ -423,3 +575,13 @@ imageContainer.querySelectorAll('input.menu__toggle').forEach((el) => {
         viewState.commentsSet();
     })
 })
+
+//Добавит коментарий к уже существующему блоку коментов
+function addComment(container, data) {
+
+}
+
+//Добавит новый блок комментариев
+function addCommentBlock(data) {
+
+}
