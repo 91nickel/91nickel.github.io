@@ -29,7 +29,7 @@ class ViewState {
         this.nodes.menubar.querySelectorAll('input.menu__toggle').forEach((el) => {
             el.addEventListener('click', (event) => {
                 this.comments = this.comments ? false : true;
-                this.controller.showHideComments();
+                this.controller.showHideComments(this.comments);
             })
         })
     }

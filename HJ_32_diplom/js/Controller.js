@@ -33,9 +33,13 @@ class Controller {
         const headers = {
             'application': 'x-www-form-urlencoded'
         };
-        this.HTTP.send(data, link, headers).then((data)=>{
+        this.HTTP.send(data, link, headers).then((data) => {
             console.log(data);
         });
+    }
+    //Скрывает либо отображает комментарии
+    showHideComments(value = false) {
+        this.comments.viewHideFormAll(value);
     }
     //Возвратит текущее состояние меню
     get viewStateValue() {
