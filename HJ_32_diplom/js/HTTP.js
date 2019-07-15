@@ -4,6 +4,7 @@ class HTTP {
     }
     send(data, link, headers) {
         console.log('HTTP -> send');
+        console.log(data);
         for (const [k, v] of data) {
             console.log(k + ': ' + v);
         }
@@ -12,7 +13,7 @@ class HTTP {
             body: data,
             credentials: 'same-origin',
             method: 'POST',
-            //headers: headers
+            headers: headers
         }).then((res) => {
             return res.json();
         })

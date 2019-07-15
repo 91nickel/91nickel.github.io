@@ -31,7 +31,7 @@ class Controller {
 
         const link = 'https://neto-api.herokuapp.com/pic/' + JSON.parse(localStorage.currentImage).id + '/comments';
         const headers = {
-            'application': 'x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded'
         };
         this.HTTP.send(data, link, headers).then((data) => {
             console.log(data);

@@ -157,7 +157,18 @@ class Comments {
         data.append('left', left);
         data.append('top', top);
 
-        this.controller.sendComment(data);
+        let json = {
+            'message': text,
+            'left': left,
+            'top': top
+        }
+        json = JSON.stringify(json);
+        console.log(json);
+        console.log(encodeURIComponent(json));
+
+        const data1 = encodeURIComponent('message') + '=' + encodeURIComponent(text) + '&' + encodeURIComponent('left') + '=' + encodeURIComponent(left) + '&' + encodeURIComponent('top') + '=' + encodeURIComponent(top);
+
+        this.controller.sendComment(data1);
     }
     //Распарсит содержимое LocalStorage и создаст из него DOM
     parse() {
