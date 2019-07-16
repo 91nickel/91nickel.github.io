@@ -34,7 +34,9 @@ class Controller {
             'Content-Type': 'application/x-www-form-urlencoded'
         };
         this.HTTP.send(data, link, headers).then((data) => {
+            console.log('Получен ответ по HTTP');
             console.log(data);
+            this.comments.parse(data);
         });
     }
     //Скрывает либо отображает комментарии

@@ -12,7 +12,8 @@ class WS {
         })
         this.connection.addEventListener('message', (event) => {
             console.log('Получено сообщение по WebSocket');
-            console.log(JSON.parse(event.data).pic);
+            console.log(event);
+            console.log(JSON.parse(event.data));
             this.controller.comments.parse(JSON.parse(event.data).pic);
         })
     }
