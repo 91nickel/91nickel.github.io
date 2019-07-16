@@ -51,6 +51,9 @@ class Comments {
     get code() {
         return JSON.parse(localStorage.currentImage);
     }
+    get image() {
+        return this.container.querySelector('.current-image');
+    }
     //Свернёт, или развернет переданную форму
     openCloseForm(node) {
         const checkbox = node.children[1];
@@ -79,18 +82,20 @@ class Comments {
     }
     //Создаст новый комментарий и вставит его в переданную форму
     create(form, date = new Date(), message = 'Текст комментария не указан') {
-        console.log('Create Comment');
+        console.log('Comments -> create()');
         const container = createNewElement('div', 'comment');
 
         container.appendChild(createNewElement('p', 'comment__time', null, date));
         container.appendChild(createNewElement('p', 'comment__message', null, message));
 
-        form.insertBefore(container, form.querySelectorAll('.comment')[form.querySelectorAll('.comment').length - 1]);
+        //form.insertBefore(container, form.children[length - 3]);
+        form.children[2].insertBefore(container, form.children[2].children[form.children[2].children.length - 3]);
         return form;
     }
     //Создаст чистую форму для комментариев и вставит её в DOM
-    createForm(top = 'calc(4 * var(--menu-top))', left = 'calc(3 * var(--menu-left))') {
-        console.log('Create Comments Form');
+    createForm(top, left) {
+        /*(top = 'calc(4 * var(--menu-top))', left = 'calc(3 * var(--menu-left))')*/
+        console.log('Comments -> createForm()');
         const form = createNewElement('form', 'comments__form');
         form.appendChild(createNewElement('span', 'comments__marker'));
         form.appendChild(createNewElement('input', 'comments__marker-checkbox', 'checkbox'))
@@ -120,15 +125,23 @@ class Comments {
 
         commentsBody.appendChild(submitButton);
 
-        form.style.top = top;
-        form.style.left = left;
+        if (top && left) {
+            form.style.top = top + this.image.getBoundingClientRect().top + 'px';
+            form.style.left = left + this.image.getBoundingClientRect().left + 'px';
+        } else {
+            form.style.top = 'calc(4 * var(--menu-top))';
+            form.style.left = 'calc(3 * var(--menu-left))';
+        }
+
+        form.style.top = top; // + this.image.getBoundingClientRect().top + 'px';
+        form.style.left = left; // + this.image.getBoundingClientRect().left + 'px';
         this.addFormEvents(form);
         this.container.appendChild(form);
         return form;
     }
     //Удалит переданную форму из дерева
     removeForm(node) {
-        console.log('Comments removeCommentForm');
+        console.log('Comments -> removeForm()');
         node.parentElement.removeChild(node);
     }
     //Полностью удалит все блоки форм из комментариев
@@ -170,16 +183,78 @@ class Comments {
 
         this.controller.sendComment(data1);
     }
-    //Распарсит содержимое LocalStorage и создаст из него DOM
-    parse() {
-        console.log('Comments parse');
+    //Распарсит содержимое LocalStorage и создаст из него DOM (изменить на получение данных не из localStorage)
+    parse(code = this.code) {
+        console.log('Comments -> parse()');
         this.removeFormAll();
-        if (!this.code.comments) {
+        if (!code.comments) {
             this.createForm();
             return console.log('Комментарии не найдены');
         }
-        let form = this.createForm(this.code.comments.top, this.code.comments.left);
-        form = this.create(form, this.code.comments.timestamp, this.code.comments.message);
-        return form;
+        let comments = code.comments;
+        console.log('comments ', comments);
+        comments['xcsdde'] = {
+            left: 0,
+            message: "4565534",
+            timestamp: 1563230396552,
+            top: 0
+        };
+        comments['123455'] = {
+            left: 0,
+            message: "4565534",
+            timestamp: 1563230396553,
+            top: 0
+        };
+        comments['asasasa'] = {
+            left: 150,
+            message: "4565534",
+            timestamp: 1563230396554,
+            top: 130
+        };
+        let list = [];
+
+        for (const i in comments) {
+            if (isUnique(list, comments[i])) {
+                list.push({
+                    top: comments[i].top,
+                    left: comments[i].left,
+                    comments: []
+                })
+            }
+        }
+        list.forEach((listElem) => {
+            for (let i in comments) {
+                if (comments[i].top === listElem.top && comments[i].left === listElem.left) {
+                    listElem.comments.push(comments[i]);
+                }
+            }
+        })
+        list.forEach((el) => {
+            el.comments.sort(sortByTimestamp);
+        })
+
+        //Проверяет имеется ли переданное значение в переданном массиве
+        function isUnique(array, value) {
+            for (let i of array) {
+                if (i.top === value.top && i.left === value.left) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        //Сортирует по таймштампу
+        function sortByTimestamp(a, b) {
+            if (a.timestamp > b.timestamp) return 1;
+            if (a.timestamp < b.timestamp) return -1;
+        }
+        console.log(list);
+        list.forEach((el) => {
+            let form = this.createForm(el.top, el.left);
+            el.comments.forEach((el) => {
+                form = this.create(form, el.timestamp, el.message);
+            })
+        })
+        //form = this.create(form, code.comments.timestamp, code.comments.message);
+        //return form;
     }
 }
