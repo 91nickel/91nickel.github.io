@@ -23,6 +23,22 @@ class Controller {
             this.standartStart();
         };
     }
+    //Управление canvas и масками
+    //Отправит содержимое canvas на сервер
+    sendCanvas() {
+        console.log('Controller -> sendCanvas()');
+        let data = this.canvas.canvasImage;
+        data.toBlob(blob => {
+            console.log(blob);
+            this.WS.connection.send(blob);
+        })
+    }
+    //Обновит маску изображения
+    updateMask(link) {
+        console.log('Controller -> updateMask()');
+        this.canvas.updateMask(link);
+        this.canvas.clearCanvas();
+    }
     //Управление панелью меню
 
     //Управление комментариями

@@ -122,7 +122,7 @@ imageContainer.querySelectorAll('input.menu__toggle').forEach((el) => {
 */
 //Создает новый элемент с указанным списком классов через пробел
 function createNewElement(name, classes, type, innerText) {
-    console.log('Create New Element');
+    //console.log('Create New Element');
     const result = document.createElement(name);
     if (classes) {
         classes = classes.split(' ').forEach((el) => {

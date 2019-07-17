@@ -192,25 +192,6 @@ class Comments {
             return console.log('Комментарии не найдены');
         }
         let comments = code.comments;
-        console.log('comments ', comments);
-        comments['xcsdde'] = {
-            left: 0,
-            message: "4565534",
-            timestamp: 1563230396552,
-            top: 0
-        };
-        comments['123455'] = {
-            left: 0,
-            message: "4565534",
-            timestamp: 1563230396553,
-            top: 0
-        };
-        comments['asasasa'] = {
-            left: 150,
-            message: "4565534",
-            timestamp: 1563230396554,
-            top: 130
-        };
         let list = [];
 
         for (const i in comments) {

@@ -4,23 +4,27 @@ class DrawingMode {
         this.controller = controller;
         this.img = this.container.querySelector('img.current-image');
         this.newCanvas();
+        this.newMask();
         this.drawingPanel = this.container.querySelector('.draw-tools');
         this.isDrawing = false;
         this.events();
     }
-    events() {
+    events(a) {
         this.canvas.addEventListener('mousedown', this.mouseDown.bind(this));
         this.canvas.addEventListener('mouseup', this.mouseUp.bind(this));
         this.canvas.addEventListener('mousemove', this.mouseMove.bind(this));
         this.canvas.addEventListener('mouseleave', this.mouseLeave.bind(this));
-        this.drawingPanel.addEventListener('click', (event) => {
-            if (event.target.tagName === 'INPUT') {
-                event.target.parentElement.querySelectorAll('input').forEach(el => {
-                    el.removeAttribute('checked');
-                })
-                event.target.setAttribute('checked', '');
-            }
-        })
+
+        if (a !== 1 || !a) {
+            this.drawingPanel.addEventListener('click', (event) => {
+                if (event.target.tagName === 'INPUT') {
+                    event.target.parentElement.querySelectorAll('input').forEach(el => {
+                        el.removeAttribute('checked');
+                    })
+                    event.target.setAttribute('checked', '');
+                }
+            })
+        }
     }
     //Скроет, либо покажет текущий canvas
     showHide() {
@@ -55,6 +59,7 @@ class DrawingMode {
     mouseUp(event) {
         event.preventDefault();
         this.isDrawing = false;
+        this.controller.sendCanvas();
         console.log('MouseUp на канвас');
     }
     mouseLeave(event) {
@@ -72,20 +77,34 @@ class DrawingMode {
         setTimeout(() => {
             this.canvas.height = this.img.clientHeight;
             this.canvas.width = this.img.clientWidth;
-        }, 2000)
+        }, 100)
         this.container.appendChild(this.canvas);
+    }
+    //Создает новую маску и вставляет её в нужное место
+    newMask() {
+        console.log('DrawingMode -> newMask()');
+        this.mask = document.createElement('img');
+        this.mask.classList.add('current-image-mask');
+        this.container.insertBefore(this.mask, this.canvas);
+    }
+    //Обновит маску изображения
+    updateMask(src) {
+        this.mask.src = src;
     }
     //Удаляет текущий canvas
     clearCanvas() {
+        console.log('DrawingMode -> clearCanvas()');
         if (this.canvas) {
             this.container.removeChild(this.canvas);
             delete this.canvas;
             delete this.ctx;
         }
+        this.newCanvas();
+        this.events(1);
     }
     //Преобразует текущий canvas в img и вернет ссылку на изображение
-    canvasToImg() {
-
+    get canvasImage() {
+        return this.canvas;
     }
     //Получает текущий цвет из панели рисования
     get color() {

@@ -14,7 +14,22 @@ class WS {
             console.log('Получено сообщение по WebSocket');
             console.log(event);
             console.log(JSON.parse(event.data));
-            this.controller.comments.parse(JSON.parse(event.data).pic);
+            if (JSON.parse(event.data).event === 'comment' || JSON.parse(event.data).event === 'pic') {
+                console.log('Comments refresh');
+                this.controller.comments.parse(JSON.parse(event.data).pic);
+            }
+            if (JSON.parse(event.data).event === 'pic' || JSON.parse(event.data).event === 'mask') {
+                console.log('Mask refresh');
+                console.log(event);
+                let link;
+                if (JSON.parse(event.data).event === 'pic') {
+                    link = JSON.parse(event.data).pic.mask;
+                }
+                if (JSON.parse(event.data).event === 'mask') {
+                    link = JSON.parse(event.data).url;
+                }
+                this.controller.updateMask(link);
+            }
         })
     }
     //Создает WebSocket соединение
