@@ -97,6 +97,7 @@ class Comments {
         /*(top = 'calc(4 * var(--menu-top))', left = 'calc(3 * var(--menu-left))')*/
         console.log('Comments -> createForm()');
         const form = createNewElement('form', 'comments__form');
+        form.style.zIndex = 1;
         form.appendChild(createNewElement('span', 'comments__marker'));
         form.appendChild(createNewElement('input', 'comments__marker-checkbox', 'checkbox'))
 
