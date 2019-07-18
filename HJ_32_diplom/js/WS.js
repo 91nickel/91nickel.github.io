@@ -1,10 +1,9 @@
 class WS {
     constructor(controller) {
         this.controller = controller;
-        this.getConnectionLink().then((data) => {
-            console.log('Ссылка получена');
-            this.createConnection(data);
-        });
+        if (localStorage.currentImage) {
+            this.create();
+        }
     }
     events() {
         this.connection.addEventListener('open', (event) => {
@@ -16,14 +15,12 @@ class WS {
             console.log(JSON.parse(event.data));
             if (JSON.parse(event.data).event === 'comment' || JSON.parse(event.data).event === 'pic') {
                 console.log('Comments refresh');
-
-                if (!this.controller.comments || !this.controller.canvas) {
-                    this.controller.standartStart();
-                }
-
-                if (this.controller.comments) {
-                    this.controller.comments.parse(JSON.parse(event.data).pic);
-                }
+                /*
+                                if (!this.controller.comments || !this.controller.canvas) {
+                                    this.controller.standartStart();
+                                }
+                */
+                this.controller.comments.parse(JSON.parse(event.data).pic);
             }
             if (JSON.parse(event.data).event === 'pic' || JSON.parse(event.data).event === 'mask') {
                 console.log('Mask refresh');
@@ -38,6 +35,12 @@ class WS {
                 this.controller.updateMask(link);
             }
         })
+    }
+    create() {
+        this.getConnectionLink().then((data) => {
+            console.log('Ссылка получена');
+            this.createConnection(data);
+        });
     }
     //Создает WebSocket соединение
     createConnection(link) {

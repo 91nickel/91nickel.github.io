@@ -16,10 +16,30 @@ class Controller {
         this.menubarMotion = new MovingElement(this.container.querySelector('.menu'));
         this.HTTP = new HTTP(this);
         this.WS = new WS(this);
+        this.comments = new Comments(this.container, this);
+        this.canvas = new DrawingMode(this.container, this);
         this.defaultStart();
         if (this.currentImage) {
             this.standartStart();
         };
+    }
+    //Возвратит текущее состояние меню
+    get viewStateValue() {
+        return this.viewState.menu;
+    }
+    //Возвратит текущее изображение на странице
+    get currentImage() {
+        console.log('get .current-image');
+        let image = this.container.querySelector('img.current-image');
+        if (image) {
+            return image;
+        } else if (this.hasImageInStorage()) {
+            image = document.createElement('img');
+            image.classList.add('current-image');
+            image.src = JSON.parse(localStorage.currentImage).url;
+            this.container.insertBefore(image, this.container.querySelector('.comments__form'));
+            return this.container.querySelector('img.current-image');
+        }
     }
     //Управление canvas и масками
     //Отправит содержимое canvas на сервер
@@ -61,32 +81,18 @@ class Controller {
     showHideComments(value = false) {
         this.comments.viewHideFormAll(value);
     }
-    //Возвратит текущее состояние меню
-    get viewStateValue() {
-        return this.viewState.menu;
-    }
-    //Возвратит текущее изображение на странице
-    get currentImage() {
-        console.log('get .current-image');
-        let image = this.container.querySelector('img.current-image');
-        if (image) {
-            return image;
-        } else if (this.hasImageInStorage()) {
-            image = document.createElement('img');
-            image.classList.add('current-image');
-            image.src = JSON.parse(localStorage.currentImage).url;
-            this.container.insertBefore(image, this.container.querySelector('.comments__form'));
-            return this.container.querySelector('img.current-image');
-        }
-    }
     //Задаст стартовые параметры если изображение отсутствует
     defaultStart() {
         this.container.removeChild(this.container.querySelector('img.current-image'));
+        //this.container.removeChild(this.container.querySelector('form.comments__form'));
+        this.viewState.menuSet('default');
     }
     //Задаст стартовые параметры если данные в системе уже есть
     standartStart() {
-        this.canvas = new DrawingMode(this.container, this);
-        this.comments = new Comments(this.container, this);
+        this.WS.create();
+        this.viewState.menuSet('main');
+        this.canvas.scaleCanvas();
+        this.comments.createForm();
     }
     //Проверяет есть ли данные об изображении в localStorage
     hasImageInStorage() {

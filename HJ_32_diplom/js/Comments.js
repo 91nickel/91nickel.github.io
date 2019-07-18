@@ -49,7 +49,9 @@ class Comments {
         return this.container.querySelectorAll('.comments__body');
     }
     get code() {
-        return JSON.parse(localStorage.currentImage);
+        if (localStorage.currentImage) {
+            return JSON.parse(localStorage.currentImage);
+        }
     }
     get image() {
         return this.container.querySelector('.current-image');
@@ -187,8 +189,9 @@ class Comments {
     //Распарсит содержимое LocalStorage и создаст из него DOM (изменить на получение данных не из localStorage)
     parse(code = this.code) {
         console.log('Comments -> parse()');
+        console.log(code);
         this.removeFormAll();
-        if (!code.comments) {
+        if (!code || !code.comments) {
             this.createForm();
             return console.log('Комментарии не найдены');
         }
@@ -214,7 +217,6 @@ class Comments {
         list.forEach((el) => {
             el.comments.sort(sortByTimestamp);
         })
-
         //Проверяет имеется ли переданное значение в переданном массиве
         function isUnique(array, value) {
             for (let i of array) {

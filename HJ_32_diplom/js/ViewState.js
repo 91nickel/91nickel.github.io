@@ -47,21 +47,26 @@ class ViewState {
     }
     //Добавит новое изображение в дерево
     addImage(file) {
-        const img = document.createElement('img');
-        addClass('current-image', img);
-        img.src = URL.createObjectURL(file);
+        console.log('ViewState -> addImage');
+
         if (this.controller.currentImage) {
-            this.controller.container.removeChild(this.controller.currentImage);
+            const img = this.controller.currentImage;
+            img.src = URL.createObjectURL(file);
+        } else {
+            const img = document.createElement('img');
+            this.controller.container.insertBefore(img, this.controller.container.children[3]);
+            addClass('current-image', img);
+            img.src = URL.createObjectURL(file);
         }
-        this.controller.container.insertBefore(img, this.controller.container.children[3]);
+
         this.preloaderSet();
         sendFileFetch(file).then((data) => {
             this.preloaderSet();
             this.menuSet('main');
-            this.controller.removeCanvas();
-            this.controller.canvas = new DrawingMode();
             console.log(data);
             localStorage.currentImage = JSON.stringify(data);
+            this.controller.currentImage.src = data.url;
+            this.controller.standartStart();
         });
     }
     //Отображает меню в зависимости от состояния

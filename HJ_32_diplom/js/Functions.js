@@ -20,29 +20,9 @@ function dragDrop() {
             controller.viewState.errorSet();
         }
 
-        if (file && !document.querySelector('.current-image')) {
-            const img = document.createElement('img');
-            addClass('current-image', img);
-            img.src = URL.createObjectURL(file);
-            imageContainer.insertBefore(img, document.querySelector('.comments__form'));
-            menubarItems.forEach(el => {
-                el.classList.display = 'inherit';
-            })
-            controller.viewState.preloaderSet();
-            sendFileFetch(file).then((data) => {
-                controller.viewState.preloaderSet();
-                controller.viewState.menuSet('main');
-                controller.canvas = new DrawingMode();
-                console.log(data);
-                localStorage.currentImage = JSON.stringify(data);
-            });
-            /*
-            sendFile(file).then((request) => {
-                console.log('request ', request);
-                viewState.menuSet('main');
-                canvas = new DrawingMode();
-            });
-            */
+        if (file) {
+            controller.viewState.addImage(file);
+            
         }
     });
 }
@@ -108,7 +88,7 @@ const addClass = (className, context) => context.classList.add(className),
     removeClass = (className, context) => context.classList.remove(className),
     hasClass = (className, context) => context.classList.contains(className);
 
-    //Создает новый элемент с указанным списком классов через пробел
+//Создает новый элемент с указанным списком классов через пробел
 function createNewElement(name, classes, type, innerText) {
     //console.log('Create New Element');
     const result = document.createElement(name);

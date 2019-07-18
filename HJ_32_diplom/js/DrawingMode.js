@@ -72,25 +72,38 @@ class DrawingMode {
         this.canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d');
         this.canvas.classList.add('current-image');
+        this.canvas.style.zIndex = '90';
         this.canvas.height = 0;
         this.canvas.width = 0;
-        setTimeout(() => {
-            this.canvas.height = this.img.clientHeight;
-            this.canvas.width = this.img.clientWidth;
-        }, 100)
         this.container.appendChild(this.canvas);
+        this.scaleCanvas();
     }
     //Создает новую маску и вставляет её в нужное место
     newMask() {
         console.log('DrawingMode -> newMask()');
         this.mask = document.createElement('img');
         this.mask.classList.add('current-image-mask');
+        this.mask.style.zIndex = '80';
         this.container.insertBefore(this.mask, this.canvas);
     }
     //Обновит маску изображения
     updateMask(src) {
         console.log('DrawingMode -> updateMask');
         this.mask.src = src;
+    }
+    scaleCanvas() {
+        console.log('DrawingMode -> scaleCanvas()');
+        if (this.controller.currentImage) {
+            setTimeout(() => {
+                try {
+                    this.canvas.height = this.img.clientHeight;
+                    this.canvas.width = this.img.clientWidth;
+                } catch (e) {
+                    console.error('Ошибка', e);
+                    return;
+                }
+            }, 100)
+        }
     }
     //Очищает текущий canvas
     clearCanvas() {
