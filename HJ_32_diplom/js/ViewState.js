@@ -9,8 +9,11 @@ class ViewState {
         this.error = false;
         this.preloader = false;
         this.nodes = {
-            menubar: this.container.querySelector('ul.menu')
+            menubar: this.container.querySelector('ul.menu'),
+            fileInput: document.createElement('input')
         }
+        this.nodes.fileInput.type = 'file';
+        this.nodes.fileInput.accept = 'image/*';
         this.events();
     }
     events() {
@@ -32,8 +35,35 @@ class ViewState {
                 this.controller.showHideComments(this.comments);
             })
         })
+        this.nodes.menubar.children[2].addEventListener('click', (e) => {
+            this.nodes.fileInput.click();
+        })
+        this.nodes.fileInput.addEventListener('change', (e) => {
+            console.log('Добавлен новый файл через fileInput');
+            const file = Array.from(this.nodes.fileInput.files)[0];
+            console.log(file);
+            this.addImage(file);
+        })
     }
-
+    //Добавит новое изображение в дерево
+    addImage(file) {
+        const img = document.createElement('img');
+        addClass('current-image', img);
+        img.src = URL.createObjectURL(file);
+        if (this.controller.currentImage) {
+            this.controller.container.removeChild(this.controller.currentImage);
+        }
+        this.controller.container.insertBefore(img, this.controller.container.children[3]);
+        this.preloaderSet();
+        sendFileFetch(file).then((data) => {
+            this.preloaderSet();
+            this.menuSet('main');
+            this.controller.canvas.removeCanvas();
+            this.controller.canvas = new DrawingMode();
+            console.log(data);
+            localStorage.currentImage = JSON.stringify(data);
+        });
+    }
     //Отображает меню в зависимости от состояния
     menuSet(state = 'default') {
         this.menu = state;

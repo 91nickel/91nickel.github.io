@@ -2,7 +2,6 @@ class DrawingMode {
     constructor(container = document.querySelector('.wrap.app'), controller) {
         this.container = container;
         this.controller = controller;
-        this.img = this.container.querySelector('img.current-image');
         this.newCanvas();
         this.newMask();
         this.drawingPanel = this.container.querySelector('.draw-tools');
@@ -91,7 +90,7 @@ class DrawingMode {
     updateMask(src) {
         this.mask.src = src;
     }
-    //Удаляет текущий canvas
+    //Очищает текущий canvas
     clearCanvas() {
         console.log('DrawingMode -> clearCanvas()');
         if (this.canvas) {
@@ -102,6 +101,19 @@ class DrawingMode {
         this.newCanvas();
         this.events(1);
     }
+    //Удалит текущий canvas и маску
+    removeCanvas() {
+        console.log('DrawingMode -> removeCanvas()');
+        if (this.canvas) {
+            this.container.removeChild(this.canvas);
+            delete this.canvas;
+            delete this.ctx;
+        }
+        if (this.mask) {
+            this.container.removeChild(this.mask);
+            delete this.mask;
+        }
+    }
     //Преобразует текущий canvas в img и вернет ссылку на изображение
     get canvasImage() {
         return this.canvas;
@@ -109,5 +121,8 @@ class DrawingMode {
     //Получает текущий цвет из панели рисования
     get color() {
         return this.drawingPanel.querySelector('input[checked]').value;
+    }
+    get img() {
+        return this.container.querySelector('img.current-image');
     }
 }

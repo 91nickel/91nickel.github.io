@@ -107,20 +107,8 @@ function sendFileFetch(file, resource = 'https://neto-api.herokuapp.com/pic') {
 const addClass = (className, context) => context.classList.add(className),
     removeClass = (className, context) => context.classList.remove(className),
     hasClass = (className, context) => context.classList.contains(className);
-/*
-if (!imageContainer.querySelector('img')) {
-    console.log(`Загрузка по умолчанию`);
-    viewState.menuSet('default');
-}
 
-//Переключение события комментария
-imageContainer.querySelectorAll('input.menu__toggle').forEach((el) => {
-    el.addEventListener('click', (e) => {
-        controller.viewState.commentsSet();
-    })
-})
-*/
-//Создает новый элемент с указанным списком классов через пробел
+    //Создает новый элемент с указанным списком классов через пробел
 function createNewElement(name, classes, type, innerText) {
     //console.log('Create New Element');
     const result = document.createElement(name);
