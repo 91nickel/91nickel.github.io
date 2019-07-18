@@ -17,7 +17,7 @@ function dragDrop() {
         } catch (e) {
             file = null;
             console.error(e);
-            viewState.errorSet();
+            controller.viewState.errorSet();
         }
 
         if (file && !document.querySelector('.current-image')) {
@@ -28,10 +28,10 @@ function dragDrop() {
             menubarItems.forEach(el => {
                 el.classList.display = 'inherit';
             })
-            viewState.preloaderSet();
+            controller.viewState.preloaderSet();
             sendFileFetch(file).then((data) => {
-                viewState.preloaderSet();
-                viewState.menuSet('main');
+                controller.viewState.preloaderSet();
+                controller.viewState.menuSet('main');
                 controller.canvas = new DrawingMode();
                 console.log(data);
                 localStorage.currentImage = JSON.stringify(data);

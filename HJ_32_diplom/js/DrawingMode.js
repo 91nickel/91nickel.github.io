@@ -68,6 +68,7 @@ class DrawingMode {
     }
     //Создаёт новый canvas и вставляет его в нужное место
     newCanvas() {
+        console.log('DrawingMode -> newCanvas');
         this.canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d');
         this.canvas.classList.add('current-image');
@@ -88,6 +89,7 @@ class DrawingMode {
     }
     //Обновит маску изображения
     updateMask(src) {
+        console.log('DrawingMode -> updateMask');
         this.mask.src = src;
     }
     //Очищает текущий canvas

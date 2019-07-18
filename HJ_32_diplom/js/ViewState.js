@@ -58,7 +58,7 @@ class ViewState {
         sendFileFetch(file).then((data) => {
             this.preloaderSet();
             this.menuSet('main');
-            this.controller.canvas.removeCanvas();
+            this.controller.removeCanvas();
             this.controller.canvas = new DrawingMode();
             console.log(data);
             localStorage.currentImage = JSON.stringify(data);

@@ -16,9 +16,7 @@ class Controller {
         this.menubarMotion = new MovingElement(this.container.querySelector('.menu'));
         this.HTTP = new HTTP(this);
         this.WS = new WS(this);
-
         this.defaultStart();
-
         if (this.currentImage) {
             this.standartStart();
         };
@@ -38,6 +36,10 @@ class Controller {
         console.log('Controller -> updateMask()');
         this.canvas.updateMask(link);
         this.canvas.clearCanvas();
+    }
+    //Удалит canvas и маску
+    removeCanvas() {
+        this.canvas.removeCanvas();
     }
     //Управление панелью меню
 
