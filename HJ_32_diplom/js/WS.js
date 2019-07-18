@@ -15,11 +15,6 @@ class WS {
             console.log(JSON.parse(event.data));
             if (JSON.parse(event.data).event === 'comment' || JSON.parse(event.data).event === 'pic') {
                 console.log('Comments refresh');
-                /*
-                                if (!this.controller.comments || !this.controller.canvas) {
-                                    this.controller.standartStart();
-                                }
-                */
                 this.controller.comments.parse(JSON.parse(event.data).pic);
             }
             if (JSON.parse(event.data).event === 'pic' || JSON.parse(event.data).event === 'mask') {
