@@ -28,6 +28,29 @@ class ViewState {
         })
         this.nodes.menubar.children[7].addEventListener('click', (e) => {
             this.menuSet('share');
+            this.createShareLink();
+        })
+        this.nodes.menubar.children[8].children[1].addEventListener('click', (e) => {
+            const inputValue = e.target.parentElement.children[0].value;
+            const input = document.createElement('span');
+            input.innerText = inputValue;
+            document.querySelector('body').appendChild(input);
+            console.log(input);
+
+            let range = document.createRange();
+            range.selectNode(input);
+            console.log(range);
+
+            let selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+
+            try {
+                document.execCommand('copy');
+            } catch (err) {
+                console.log('Can`t copy');
+            }
+            document.querySelector('body').removeChild(input);
         })
         this.nodes.menubar.querySelectorAll('input.menu__toggle').forEach((el) => {
             el.addEventListener('click', (event) => {
@@ -168,5 +191,16 @@ class ViewState {
             let displayValue = param ? null : 'none';
             preloader.style.display = displayValue;
         }
+    }
+    //Вернет ссылку для поделиться
+    createShareLink() {
+        console.log('ViewState -> createShareLink');
+        const link = window.location.href;
+        const imageLink = encodeURIComponent(this.controller.currentImage.src);
+        const imageId = JSON.parse(localStorage.currentImage).id;
+        const result = link + '?' + 'id=' + imageId + '&' + 'url=' + imageLink;
+        this.nodes.menubar.children[8].children[0].value = result;
+        console.log(result);
+        return result;
     }
 }

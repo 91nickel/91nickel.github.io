@@ -61,8 +61,6 @@ class Controller {
     removeCanvas() {
         this.canvas.removeCanvas();
     }
-    //Управление панелью меню
-
     //Управление комментариями
     sendComment(data) {
         console.log('Controller -> sendComment');
@@ -81,18 +79,64 @@ class Controller {
     showHideComments(value = false) {
         this.comments.viewHideFormAll(value);
     }
-    //Задаст стартовые параметры если изображение отсутствует
+    //Задаст стартовые параметры
     defaultStart() {
         this.container.removeChild(this.container.querySelector('img.current-image'));
-        //this.container.removeChild(this.container.querySelector('form.comments__form'));
         this.viewState.menuSet('default');
+        if (this.hasImageIdInLink()) {
+            console.log('Найдено изображение в теле ссылки');
+            const data = this.hasImageIdInLink();
+            console.log(data);
+            //this.clearStorage();
+
+            const currentImage = {
+                'id': data.id,
+                'url': decodeURIComponent(data.url)
+            };
+
+            console.log(currentImage);
+            localStorage.currentImage = JSON.stringify(currentImage);
+            window.location.href = 'index.html';
+        } else {
+            console.log('Не найден ID изображения в теле ссылки');
+        }
     }
     //Задаст стартовые параметры если данные в системе уже есть
     standartStart() {
+
         this.WS.create();
         this.viewState.menuSet('main');
         this.canvas.scaleCanvas();
         this.comments.createForm();
+    }
+    //Проверит есть ли данные об изображении в теле ссылки
+    hasImageIdInLink() {
+        console.log('Controller -> hasImageIdInLink');
+        const link = window.location.href;
+        let array = link.split('?');
+        if (array.length === 1) {
+            return false;
+        }
+        if (array.length > 1) {
+            array.splice(0, 1);
+            array = array[0].split('&');
+
+            array = array.map((el) => {
+                const keyValue = el.split('=');
+                const result = {};
+                result[keyValue[0]] = keyValue[1];
+                return result;
+            });
+
+            console.log(array);
+            const result = {}
+            array.forEach((el) => {
+                for (let key in el) {
+                    result[key] = el[key];
+                }
+            })
+            return result;
+        }
     }
     //Проверяет есть ли данные об изображении в localStorage
     hasImageInStorage() {
