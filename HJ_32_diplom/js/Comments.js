@@ -138,6 +138,7 @@ class Comments {
 
         form.style.top = top; // + this.image.getBoundingClientRect().top + 'px';
         form.style.left = left; // + this.image.getBoundingClientRect().left + 'px';
+        //form.style.display = 'none';
         this.addFormEvents(form);
         this.container.appendChild(form);
         return form;
@@ -192,7 +193,9 @@ class Comments {
         console.log(code);
         this.removeFormAll();
         if (!code || !code.comments) {
-            this.createForm();
+            if (this.controller.viewStateValue !== 'default') {
+                this.createForm();
+            }
             return console.log('Комментарии не найдены');
         }
         let comments = code.comments;

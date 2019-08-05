@@ -83,6 +83,7 @@ class DrawingMode {
         console.log('DrawingMode -> newMask()');
         this.mask = document.createElement('img');
         this.mask.classList.add('current-image-mask');
+        //this.mask.style.display = 'none';
         this.mask.style.zIndex = '80';
         this.container.insertBefore(this.mask, this.canvas);
     }
@@ -90,6 +91,7 @@ class DrawingMode {
     updateMask(src) {
         console.log('DrawingMode -> updateMask');
         this.mask.src = src;
+        this.mask.style.display = src ? '' : 'none';
     }
     scaleCanvas() {
         console.log('DrawingMode -> scaleCanvas()');
