@@ -22,7 +22,6 @@ function dragDrop() {
 
         if (file) {
             controller.viewState.addImage(file);
-            
         }
     });
 }

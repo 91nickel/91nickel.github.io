@@ -5,6 +5,7 @@ class Comments {
         this.parse();
         this.events();
     }
+
     events() {
         /*
         this.container.children[0].children[4].addEventListener('click', (event) => {
@@ -18,10 +19,12 @@ class Comments {
         })
         */
     }
+
     addFormEvents(form) {
         form.addEventListener('click', (event) => {
             if (event.target.classList.contains('comments__marker-checkbox') && !event.target.hasAttribute('checked')) {
                 this.closeFormAll();
+                this.removeEmptyForms(event.target.parentElement);
                 this.openCloseForm(event.target.parentElement);
                 return;
             }
@@ -40,22 +43,30 @@ class Comments {
                 this.send(event.target.parentElement.querySelector('.comments__input').value, coords.left - coordsImg.left, coords.top - coordsImg.top);
             }
         })
-
     }
+
     get forms() {
         return this.container.querySelectorAll('form.comments__form');
     }
+
     get bodys() {
         return this.container.querySelectorAll('.comments__body');
     }
+
     get code() {
         if (localStorage.currentImage) {
             return JSON.parse(localStorage.currentImage);
         }
     }
+
     get image() {
         return this.container.querySelector('.current-image');
     }
+
+    get canvas() {
+        return document.querySelector('canvas.current-image');
+    }
+
     //Свернёт, или развернет переданную форму
     openCloseForm(node) {
         const checkbox = node.children[1];
@@ -68,6 +79,18 @@ class Comments {
             comments.style.display = 'block';
         }
     }
+
+    //Удалит формы без комментариев, кроме формы, переданной в exception
+    removeEmptyForms(exception) {
+        this.forms.forEach((el) => {
+            if (el !== exception) {
+                if (el.querySelectorAll('.comment').length < 2) {
+                    this.removeForm(el);
+                }
+            }
+        })
+    }
+
     //Свернет все формы комментариев
     closeFormAll() {
         this.forms.forEach((el) => {
@@ -75,6 +98,7 @@ class Comments {
             el.children[2].style.display = 'none';
         })
     }
+
     //Скроет либо покажет все формы с комментариями
     viewHideFormAll(value = false) {
         value = value ? '' : 'none';
@@ -82,6 +106,7 @@ class Comments {
             el.style.display = value;
         })
     }
+
     //Создаст новый комментарий и вставит его в переданную форму
     create(form, date = new Date(), message = 'Текст комментария не указан') {
         console.log('Comments -> create()');
@@ -94,6 +119,7 @@ class Comments {
         form.children[2].insertBefore(container, form.children[2].children[form.children[2].children.length - 3]);
         return form;
     }
+
     //Создаст чистую форму для комментариев и вставит её в DOM
     createForm(top, left) {
         /*(top = 'calc(4 * var(--menu-top))', left = 'calc(3 * var(--menu-left))')*/
@@ -111,7 +137,7 @@ class Comments {
         loader.style.display = 'none';
         new Array(5).fill(1).forEach((el) => {
             loader.appendChild(createNewElement('span'));
-        })
+        });
         comment.appendChild(loader);
         commentsBody.appendChild(comment);
 
@@ -143,11 +169,13 @@ class Comments {
         this.container.appendChild(form);
         return form;
     }
+
     //Удалит переданную форму из дерева
     removeForm(node) {
         console.log('Comments -> removeForm()');
         node.parentElement.removeChild(node);
     }
+
     //Полностью удалит все блоки форм из комментариев
     removeFormAll() {
         console.log('Comments removeCommentFormAll');
@@ -155,6 +183,7 @@ class Comments {
             this.removeForm(el);
         })
     }
+
     //Удалит все комментарии из переданной формы
     removeCommentsFromForm(node) {
         console.log('Comments removeCommentsFromForm');
@@ -166,36 +195,20 @@ class Comments {
             }
         })
     }
+
     //Отправит переданный комментарий на сервер
     send(text, left, top) {
         console.log('Comments -> send');
-        const data = new FormData();
-        data.append('message', text);
-        data.append('left', left);
-        data.append('top', top);
-
-        let json = {
-            'message': text,
-            'left': left,
-            'top': top
-        }
-        json = JSON.stringify(json);
-        console.log(json);
-        console.log(encodeURIComponent(json));
-
         const data1 = encodeURIComponent('message') + '=' + encodeURIComponent(text) + '&' + encodeURIComponent('left') + '=' + encodeURIComponent(left) + '&' + encodeURIComponent('top') + '=' + encodeURIComponent(top);
-
         this.controller.sendComment(data1);
     }
+
     //Распарсит содержимое LocalStorage и создаст из него DOM (изменить на получение данных не из localStorage)
     parse(code = this.code) {
         console.log('Comments -> parse()');
         console.log(code);
         this.removeFormAll();
         if (!code || !code.comments) {
-            if (this.controller.viewStateValue !== 'default') {
-                this.createForm();
-            }
             return console.log('Комментарии не найдены');
         }
         let comments = code.comments;
@@ -216,10 +229,11 @@ class Comments {
                     listElem.comments.push(comments[i]);
                 }
             }
-        })
+        });
         list.forEach((el) => {
             el.comments.sort(sortByTimestamp);
-        })
+        });
+
         //Проверяет имеется ли переданное значение в переданном массиве
         function isUnique(array, value) {
             for (let i of array) {
@@ -229,11 +243,30 @@ class Comments {
             }
             return true;
         }
+
         //Сортирует по таймштампу
         function sortByTimestamp(a, b) {
             if (a.timestamp > b.timestamp) return 1;
             if (a.timestamp < b.timestamp) return -1;
         }
+
+        list.map((el) => {
+            el.comments.map((el) => {
+                let date = new Date(el.timestamp);
+                const day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+                const month = date.getMonth() < 10 ? '0' + date.getMonth() : date.getMonth();
+                const year = String(date.getFullYear()).slice(2);
+                const hour = date.getHours() < 10 ? '0' + date.getHours() : date.getHours();
+                const minutes = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
+                const seconds = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+
+                let dateFormated = `${day}.${month}.${year}. ${hour}:${minutes}:${seconds}`;
+
+                el.timestamp = dateFormated;
+                return el;
+            });
+        });
+
         console.log(list);
         list.forEach((el) => {
             let form = this.createForm(el.top, el.left);
@@ -241,7 +274,5 @@ class Comments {
                 form = this.create(form, el.timestamp, el.message);
             })
         })
-        //form = this.create(form, code.comments.timestamp, code.comments.message);
-        //return form;
     }
 }

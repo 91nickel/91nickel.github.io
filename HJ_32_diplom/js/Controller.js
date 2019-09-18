@@ -21,12 +21,42 @@ class Controller {
         this.defaultStart();
         if (this.currentImage) {
             this.standartStart();
-        };
+        }
+        this.events();
     }
+
+    events() {
+        document.addEventListener('click', (event) => {
+            console.log(event);
+            if (this.viewStateValue !== 'standart'
+                || event.target.classList.contains('comments__marker-checkbox')
+                || event.target.classList.contains('comments__body')
+                || event.target.classList.contains('comment')
+                || event.target.tagName === 'INPUT'
+                || event.target.tagName === 'TEXTAREA'
+                || event.target.tagName === 'FORM') {
+                console.log('Отказ');
+                return;
+            } else {
+                console.log('Событие сработало');
+                this.comments.closeFormAll();
+                this.comments.removeEmptyForms();
+
+                console.log();
+
+                this.comments.createForm(
+                    event.clientY - this.currentImage.getBoundingClientRect().top,
+                    event.clientX - this.currentImage.getBoundingClientRect().left
+                );
+            }
+        })
+    }
+
     //Возвратит текущее состояние меню
     get viewStateValue() {
         return this.viewState.menu;
     }
+
     //Возвратит текущее изображение на странице
     get currentImage() {
         console.log('get .current-image');
@@ -41,26 +71,31 @@ class Controller {
             return this.container.querySelector('img.current-image');
         }
     }
+
     //Управление canvas и масками
     //Отправит содержимое canvas на сервер
     sendCanvas() {
         console.log('Controller -> sendCanvas()');
+
         let data = this.canvas.canvasImage;
         data.toBlob(blob => {
             console.log(blob);
             this.WS.connection.send(blob);
         })
     }
+
     //Обновит маску изображения
     updateMask(link) {
         console.log('Controller -> updateMask()');
         this.canvas.updateMask(link);
         this.canvas.clearCanvas();
     }
+
     //Удалит canvas и маску
     removeCanvas() {
         this.canvas.removeCanvas();
     }
+
     //Управление комментариями
     sendComment(data) {
         console.log('Controller -> sendComment');
@@ -75,10 +110,12 @@ class Controller {
             this.comments.parse(data);
         });
     }
+
     //Скрывает либо отображает комментарии
     showHideComments(value = false) {
         this.comments.viewHideFormAll(value);
     }
+
     //Задаст стартовые параметры
     defaultStart() {
         this.container.removeChild(this.container.querySelector('img.current-image'));
@@ -101,14 +138,15 @@ class Controller {
             console.log('Не найден ID изображения в теле ссылки');
         }
     }
+
     //Задаст стартовые параметры если данные в системе уже есть
     standartStart() {
-
         this.WS.create();
         this.viewState.menuSet('main');
         this.canvas.scaleCanvas();
         this.comments.createForm();
     }
+
     //Проверит есть ли данные об изображении в теле ссылки
     hasImageIdInLink() {
         console.log('Controller -> hasImageIdInLink');
@@ -138,16 +176,19 @@ class Controller {
             return result;
         }
     }
+
     //Проверяет есть ли данные об изображении в localStorage
     hasImageInStorage() {
         if (localStorage.currentImage) {
             return true;
         }
     }
+
     //Очистит localStorage
     clearStorage() {
         console.log('ClearStorage');
         localStorage.clear();
     }
 }
+
 const controller = new Controller();

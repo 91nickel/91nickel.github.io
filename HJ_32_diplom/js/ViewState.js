@@ -11,7 +11,7 @@ class ViewState {
         this.nodes = {
             menubar: this.container.querySelector('ul.menu'),
             fileInput: document.createElement('input')
-        }
+        };
         this.nodes.fileInput.type = 'file';
         this.nodes.fileInput.accept = 'image/*';
         this.events();
@@ -19,17 +19,17 @@ class ViewState {
     events() {
         this.nodes.menubar.children[1].addEventListener('click', (e) => {
             this.menuSet('main');
-        })
+        });
         this.nodes.menubar.children[3].addEventListener('click', (e) => {
             this.menuSet('standart');
-        })
+        });
         this.nodes.menubar.children[5].addEventListener('click', (e) => {
             this.menuSet('paint');
-        })
+        });
         this.nodes.menubar.children[7].addEventListener('click', (e) => {
             this.menuSet('share');
             this.createShareLink();
-        })
+        });
         this.nodes.menubar.children[8].children[1].addEventListener('click', (e) => {
             const inputValue = e.target.parentElement.children[0].value;
             const input = document.createElement('span');
@@ -51,16 +51,16 @@ class ViewState {
                 console.log('Can`t copy');
             }
             document.querySelector('body').removeChild(input);
-        })
+        });
         this.nodes.menubar.querySelectorAll('input.menu__toggle').forEach((el) => {
             el.addEventListener('click', (event) => {
-                this.comments = this.comments ? false : true;
+                this.comments = !this.comments;
                 this.controller.showHideComments(this.comments);
             })
-        })
+        });
         this.nodes.menubar.children[2].addEventListener('click', (e) => {
             this.nodes.fileInput.click();
-        })
+        });
         this.nodes.fileInput.addEventListener('change', (e) => {
             console.log('Добавлен новый файл через fileInput');
             const file = Array.from(this.nodes.fileInput.files)[0];
@@ -148,7 +148,7 @@ class ViewState {
                         el.style.display = 'inline-block';
                     })
                 }
-            }
+            };
             return modes[param];
         }
 
@@ -183,7 +183,7 @@ class ViewState {
     //Отображает и скрывает прелоадер
     preloaderSet() {
 
-        this.preloader = this.preloader ? false : true;
+        this.preloader = !this.preloader;
         showPreloader(this.preloader);
 
         function showPreloader(param = true) {
