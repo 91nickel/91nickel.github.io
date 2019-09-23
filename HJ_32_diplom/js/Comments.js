@@ -157,14 +157,8 @@ class Comments {
         if (top && left) {
             form.style.top = top + this.image.getBoundingClientRect().top + 'px';
             form.style.left = left + this.image.getBoundingClientRect().left + 'px';
-        } else {
-            form.style.top = 'calc(4 * var(--menu-top))';
-            form.style.left = 'calc(3 * var(--menu-left))';
         }
 
-        form.style.top = top; // + this.image.getBoundingClientRect().top + 'px';
-        form.style.left = left; // + this.image.getBoundingClientRect().left + 'px';
-        //form.style.display = 'none';
         this.addFormEvents(form);
         this.container.appendChild(form);
         return form;

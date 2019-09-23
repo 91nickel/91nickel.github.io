@@ -44,27 +44,31 @@ class DrawingMode {
     mouseMove(event) {
         event.preventDefault();
 
-        //requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
             if (this.isDrawing && this.controller.viewStateValue === 'paint') {
                 console.log('MouseMove на канвас');
                 //this.ctx.putImageData(this.startedCanvasImage, 0, 0);
                 this.ctx.beginPath()
-                //this.ctx.moveTo(this.coordinates.x, this.coordinates.y);
-                // this.ctx.lineTo(
-                //     event.clientX - event.target.getBoundingClientRect().left,
-                //     event.clientY - event.target.getBoundingClientRect().top
-                // );
-                // this.ctx.strokeStyle = this.color;
-                // this.ctx.lineWidth = 5;
+                this.ctx.moveTo(this.coordinates.x, this.coordinates.y);
+                this.ctx.lineTo(
+                    event.clientX - event.target.getBoundingClientRect().left,
+                    event.clientY - event.target.getBoundingClientRect().top
+                );
+                this.ctx.strokeStyle = this.color;
+                this.ctx.lineWidth = 10;
                 this.ctx.lineJoin = 'round';
                 this.ctx.lineCap = 'round';
                 this.ctx.stroke();
+                this.coordinates = {
+                    x: event.clientX - event.target.getBoundingClientRect().left,
+                    y: event.clientY - event.target.getBoundingClientRect().top
+                }
                 //ctx.beginPath();
-                ctx.fillStyle = color;
-                ctx.arc(event.clientX - canvas.getBoundingClientRect().left, event.clientY - canvas.getBoundingClientRect().top, 5, 0, 2 * Math.PI);
-                ctx.fill();
+                // this.ctx.fillStyle = this.color;
+                // this.ctx.arc(event.clientX - this.canvas.getBoundingClientRect().left, event.clientY - this.canvas.getBoundingClientRect().top, 5, 0, 2 * Math.PI);
+                // this.ctx.fill();
             }
-        //})
+        })
     }
 
     mouseUp(event) {
@@ -80,7 +84,7 @@ class DrawingMode {
         this.isDrawing = false;
     }
 
-    sendCanvasIfNoDrawing(){
+    sendCanvasIfNoDrawing() {
         setTimeout(() => {
             if (!this.isDrawing) {
                 console.log('Отправка изображения', this.isDrawing);
@@ -136,7 +140,6 @@ class DrawingMode {
                     this.canvas.width = this.img.clientWidth;
                 } catch (e) {
                     console.error('Ошибка', e);
-                    return;
                 }
             }, 100)
         }

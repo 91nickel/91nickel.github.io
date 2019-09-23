@@ -118,7 +118,7 @@ class Controller {
 
     //Задаст стартовые параметры
     defaultStart() {
-        this.container.removeChild(this.container.querySelector('img.current-image'));
+        //this.container.removeChild(this.container.querySelector('img.current-image'));
         this.viewState.menuSet('default');
         if (this.hasImageIdInLink()) {
             console.log('Найдено изображение в теле ссылки');
@@ -144,7 +144,6 @@ class Controller {
         this.WS.create();
         this.viewState.menuSet('main');
         this.canvas.scaleCanvas();
-        this.comments.createForm();
     }
 
     //Проверит есть ли данные об изображении в теле ссылки
