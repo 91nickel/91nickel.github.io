@@ -44,27 +44,27 @@ class DrawingMode {
     mouseMove(event) {
         event.preventDefault();
 
-        requestAnimationFrame(() => {
+        //requestAnimationFrame(() => {
             if (this.isDrawing && this.controller.viewStateValue === 'paint') {
                 console.log('MouseMove на канвас');
-                this.ctx.putImageData(this.startedCanvasImage, 0, 0);
+                //this.ctx.putImageData(this.startedCanvasImage, 0, 0);
                 this.ctx.beginPath()
-                this.ctx.moveTo(this.coordinates.x, this.coordinates.y);
-                this.ctx.lineTo(
-                    event.clientX - event.target.getBoundingClientRect().left,
-                    event.clientY - event.target.getBoundingClientRect().top
-                );
-                this.ctx.strokeStyle = this.color;
-                this.ctx.lineWidth = 5;
+                //this.ctx.moveTo(this.coordinates.x, this.coordinates.y);
+                // this.ctx.lineTo(
+                //     event.clientX - event.target.getBoundingClientRect().left,
+                //     event.clientY - event.target.getBoundingClientRect().top
+                // );
+                // this.ctx.strokeStyle = this.color;
+                // this.ctx.lineWidth = 5;
                 this.ctx.lineJoin = 'round';
                 this.ctx.lineCap = 'round';
                 this.ctx.stroke();
                 //ctx.beginPath();
-                //ctx.fillStyle = color;
-                //ctx.arc(event.clientX - canvas.getBoundingClientRect().left, event.clientY - canvas.getBoundingClientRect().top, 5, 0, 2 * Math.PI);
-                //ctx.fill();
+                ctx.fillStyle = color;
+                ctx.arc(event.clientX - canvas.getBoundingClientRect().left, event.clientY - canvas.getBoundingClientRect().top, 5, 0, 2 * Math.PI);
+                ctx.fill();
             }
-        })
+        //})
     }
 
     mouseUp(event) {
