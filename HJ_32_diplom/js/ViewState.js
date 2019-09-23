@@ -72,8 +72,6 @@ class ViewState {
     addImage(file) {
         console.log('ViewState -> addImage');
 
-        localStorage.canvasNoFirstLoad = false;
-
         if (this.controller.currentImage) {
             const img = this.controller.currentImage;
             img.src = URL.createObjectURL(file);
@@ -91,6 +89,7 @@ class ViewState {
             console.log(data);
             localStorage.currentImage = JSON.stringify(data);
             this.controller.currentImage.src = data.url;
+            localStorage.canvasNoFirstLoad = false;
             this.controller.standartStart();
         });
     }

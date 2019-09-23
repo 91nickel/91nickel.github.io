@@ -30,7 +30,7 @@ class WS {
                 }
                 this.controller.updateMask(link);
             }
-            if (!localStorage.canvasNoFirstLoad && JSON.parse(event.data).event === 'mask') {
+            if (!localStorage.canvasNoFirstLoad || localStorage.canvasNoFirstLoad === 'false' && JSON.parse(event.data).event === 'mask') {
                 console.log('Это первая отправка canvas');
                 localStorage.canvasNoFirstLoad = true;
                 this.create();
