@@ -21,13 +21,16 @@ class Comments {
             if (event.target.classList.contains('comments__close')) {
                 this.closeFormAll();
             }
-            if (event.target.classList.contains('comments__submit')) {
-                event.preventDefault();
-                const coords = event.currentTarget.getBoundingClientRect();
-                const coordsImg = this.container.querySelector('img').getBoundingClientRect();
-                this.send(event.target.parentElement.querySelector('.comments__input').value, coords.left - coordsImg.left, coords.top - coordsImg.top);
-            }
-        })
+        });
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const coords = {
+                left: event.currentTarget.dataset.left,
+                top: event.currentTarget.dataset.top
+            };
+
+            this.send(event.target.parentElement.querySelector('.comments__input').value, coords.left, coords.top);
+        });
     }
 
     get forms() {
@@ -139,10 +142,11 @@ class Comments {
 
         commentsBody.appendChild(submitButton);
 
-        if (top && left) {
-            form.style.top = top + this.image.getBoundingClientRect().top + 'px';
-            form.style.left = left + this.image.getBoundingClientRect().left + 'px';
-        }
+        form.dataset.top = Math.round(top);
+        form.dataset.left = Math.round(left);
+
+        form.style.top = Math.round(top) + Math.round(this.image.getBoundingClientRect().top) + 'px';
+        form.style.left = Math.round(left) + Math.round(this.image.getBoundingClientRect().left) + 'px';
 
         this.addFormEvents(form);
         this.container.appendChild(form);
