@@ -3,21 +3,6 @@ class Comments {
         this.container = container;
         this.controller = controller;
         this.parse();
-        this.events();
-    }
-
-    events() {
-        /*
-        this.container.children[0].children[4].addEventListener('click', (event) => {
-            console.log(event);
-
-            if (event.target.classList.contains('menu__toggle')) {
-                if (event.target.value === 'off') {
-
-                };
-            }
-        })
-        */
     }
 
     addFormEvents(form) {
@@ -172,7 +157,7 @@ class Comments {
 
     //Полностью удалит все блоки форм из комментариев
     removeFormAll() {
-        console.log('Comments removeCommentFormAll');
+        console.log('Comments -> removeFormAll()');
         this.forms.forEach((el) => {
             this.removeForm(el);
         })

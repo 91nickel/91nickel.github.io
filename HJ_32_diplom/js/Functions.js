@@ -66,7 +66,7 @@ function sendFile(file) {
 function sendFileFetch(file, resource = 'https://neto-api.herokuapp.com/pic') {
 
     const form = new FormData();
-    form.append('title', file.name)
+    form.append('title', file.name);
     form.append('image', file);
     /*
         console.log(file);
