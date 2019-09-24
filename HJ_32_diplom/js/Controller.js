@@ -65,6 +65,7 @@ class Controller {
             return image;
         } else if (this.hasImageInStorage()) {
             image = document.createElement('img');
+            image.height = 638
             image.classList.add('current-image');
             image.src = JSON.parse(localStorage.currentImage).url;
             this.container.insertBefore(image, this.container.querySelector('.comments__form'));
@@ -118,13 +119,11 @@ class Controller {
 
     //Задаст стартовые параметры
     defaultStart() {
-        //this.container.removeChild(this.container.querySelector('img.current-image'));
         this.viewState.menuSet('default');
         if (this.hasImageIdInLink()) {
             console.log('Найдено изображение в теле ссылки');
             const data = this.hasImageIdInLink();
             console.log(data);
-            //this.clearStorage();
 
             const currentImage = {
                 'id': data.id,

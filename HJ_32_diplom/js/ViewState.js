@@ -74,11 +74,13 @@ class ViewState {
 
         if (this.controller.currentImage) {
             const img = this.controller.currentImage;
+            img.height = 638;
             img.src = URL.createObjectURL(file);
         } else {
             const img = document.createElement('img');
             this.controller.container.insertBefore(img, this.controller.container.children[3]);
             addClass('current-image', img);
+            img.height = 638;
             img.src = URL.createObjectURL(file);
         }
 
