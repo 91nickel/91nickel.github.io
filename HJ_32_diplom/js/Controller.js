@@ -36,14 +36,10 @@ class Controller {
                 || event.target.tagName === 'TEXTAREA'
                 || event.target.tagName === 'FORM') {
                 console.log('Отказ');
-                this.comments.removeEmptyForms();
-                return;
             } else {
                 console.log('Событие сработало');
                 this.comments.closeFormAll();
                 this.comments.removeEmptyForms();
-
-                console.log();
 
                 if (!event.target.classList.contains('menu__item-title')
                     && !event.target.classList.contains('menu__item')) {

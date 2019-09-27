@@ -16,7 +16,11 @@ class ViewState {
         this.nodes.fileInput.accept = 'image/*';
         this.events();
     }
+
     events() {
+        this.nodes.menubar.addEventListener('click', (event) => {
+            this.controller.comments.removeEmptyForms();
+        });
         this.nodes.menubar.children[1].addEventListener('click', (e) => {
             this.menuSet('main');
         });
@@ -68,6 +72,7 @@ class ViewState {
             this.addImage(file);
         })
     }
+
     //Добавит новое изображение в дерево
     addImage(file) {
         console.log('ViewState -> addImage');
@@ -95,6 +100,7 @@ class ViewState {
             this.controller.standartStart();
         });
     }
+
     //Отображает меню в зависимости от состояния
     menuSet(state = 'default') {
         this.menu = state;
@@ -163,10 +169,12 @@ class ViewState {
             })
         }
     }
+
     //На три секунды вызовет показ сообщения об ошибке в зависимости от параметра
     errorSet(type) {
         this.error = type;
         showError(this.error);
+
         //В зависимости от переданного параметра отображает одно из двух возможных уведомлений об ошибке
         function showError(param = true) {
             console.log(`Вызов showError`);
@@ -183,6 +191,7 @@ class ViewState {
             }, 3000);
         }
     }
+
     //Отображает и скрывает прелоадер
     preloaderSet() {
 
@@ -195,6 +204,7 @@ class ViewState {
             preloader.style.display = displayValue;
         }
     }
+
     //Вернет ссылку для поделиться
     createShareLink() {
         console.log('ViewState -> createShareLink');
