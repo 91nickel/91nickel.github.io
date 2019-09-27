@@ -36,6 +36,7 @@ class Controller {
                 || event.target.tagName === 'TEXTAREA'
                 || event.target.tagName === 'FORM') {
                 console.log('Отказ');
+                this.comments.removeEmptyForms();
                 return;
             } else {
                 console.log('Событие сработало');
@@ -44,10 +45,13 @@ class Controller {
 
                 console.log();
 
-                this.comments.createForm(
-                    event.clientY - this.currentImage.getBoundingClientRect().top,
-                    event.clientX - this.currentImage.getBoundingClientRect().left
-                );
+                if (!event.target.classList.contains('menu__item-title')
+                    && !event.target.classList.contains('menu__item')) {
+                    this.comments.openCloseForm(this.comments.createForm(
+                        event.clientY - this.currentImage.getBoundingClientRect().top,
+                        event.clientX - this.currentImage.getBoundingClientRect().left
+                    ));
+                }
             }
         })
     }
