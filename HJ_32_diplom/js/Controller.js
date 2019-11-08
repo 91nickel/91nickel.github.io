@@ -165,12 +165,12 @@ class Controller {
             });
 
             console.log(array);
-            const result = {}
+            const result = {};
             array.forEach((el) => {
                 for (let key in el) {
                     result[key] = el[key];
                 }
-            })
+            });
             return result;
         }
     }
